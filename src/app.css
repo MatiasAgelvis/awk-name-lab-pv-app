@@ -48,3 +48,27 @@ body {
 .logo:hover {
     filter: drop-shadow(0 0 2em #09672fbb);
 }
+
+.readonly-input {
+    background-color: #f5f5f5;
+}
+.action-button {
+    transition: background-color 0.2s;
+}
+.action-input {
+    transition: box-shadow 0.2s;
+}
+.action-button.success {
+    background-color: #28a745;
+}
+
+.action-button.error {
+    background-color: #dc3545;
+}
+.action-input.success {
+    box-shadow: 0 0 20px #28a745;
+}
+
+.action-input.error {
+    box-shadow: 0 0 10px #dc3545;
+}
