@@ -1,27 +1,16 @@
 <script>
-    import { excelInput } from "../stores";
+    import { excelInput } from "../stores/variables.js";
     import { processLine } from "../scripts/processLine.js";
+    import { copyToClipboard } from "../scripts/copyToClipboard.js";
+    import { createFeedbackStore } from "../stores/feedback.js";
+    const CopyState = {
+        BASE: "Copy",
+        SUCCESS: "Copied",
+        ERROR: "Error",
+    };
+
     $: fileName = processLine($excelInput);
-
-    let copyStatus = "";
-    let timeoutId;
-
-    async function copyToClipboard(textToCopy) {
-        try {
-            await navigator.clipboard.writeText(textToCopy);
-            copyStatus = "copied";
-
-            // Clear any existing timeout
-            clearTimeout(timeoutId);
-
-            // Reset status after 2 seconds
-            timeoutId = setTimeout(() => {
-                copyStatus = "";
-            }, 2000);
-        } catch (err) {
-            copyStatus = "error";
-        }
-    }
+    $: feedback = createFeedbackStore(CopyState);
 </script>
 
 <input
@@ -29,52 +18,21 @@
     readonly
     value={fileName}
     on:click={() => {
-        copyToClipboard(fileName);
+        const wasCopied = copyToClipboard(fileName);
+        feedback.show(wasCopied);
     }}
     class="readonly-input action-input"
-    class:success={copyStatus === "copied"}
-    class:error={copyStatus === "error"}
+    class:success={$feedback === CopyState.SUCCESS}
+    class:error={$feedback === CopyState.ERROR}
 />
 <button
     on:click={() => {
-        console.debug("Copying to clipboard: ", fileName);
-        copyToClipboard(fileName);
+        const wasCopied = copyToClipboard(fileName);
+        feedback.show(wasCopied);
     }}
     class="action-button"
-    class:success={copyStatus === "copied"}
-    class:error={copyStatus === "error"}
+    class:success={$feedback === CopyState.SUCCESS}
+    class:error={$feedback === CopyState.ERROR}
 >
-    {#if copyStatus === "copied"}
-        <span>Copied!</span>
-    {:else if copyStatus === "error"}
-        <span>Error!</span>
-    {:else}
-        <span>Copy</span>
-    {/if}
+    {$feedback}
 </button>
-
-<style>
-    .readonly-input {
-        background-color: #f5f5f5;
-    }
-    .action-button {
-        transition: background-color 0.2s;
-    }
-    .action-input {
-        transition: box-shadow 0.2s;
-    }
-    .action-button.success {
-        background-color: #28a745;
-    }
-
-    .action-button.error {
-        background-color: #dc3545;
-    }
-    .action-input.success {
-        box-shadow: 0 0 20px #28a745;
-    }
-
-    .action-input.error {
-        box-shadow: 0 0 20px #dc3545;
-    }
-</style>
