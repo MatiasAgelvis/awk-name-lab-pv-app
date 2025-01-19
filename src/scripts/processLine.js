@@ -1,6 +1,6 @@
 export function processLine(line) {
   try {
-    console.debug("Processing line:", line);
+    // console.debug("Processing line:", line);
     /**
     Normalizes text lines by converting sequences of multiple
     spaces into tab characters.
@@ -18,11 +18,14 @@ export function processLine(line) {
 
     // Split the second field (NAME) by spaces
     const NAME = fields[1].split(" ");
-    console.debug("NAME result:", NAME);
+    // console.debug("NAME result:", NAME);
 
     // Construct the output string
     return `LABO_${fields[0]}-${NAME[0]}-${fields[3]} ${fields[2]}`;
   } catch {
+    if (line === "") {
+      return "";
+    }
     return "Error processing line";
   }
 }
