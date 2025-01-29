@@ -1,3 +1,7 @@
+function addLeadingZero(value) {
+  return value.toString().padStart(2, "0");
+}
+
 export function processLine(line) {
   try {
     // console.debug("Processing line:", line);
@@ -16,12 +20,18 @@ export function processLine(line) {
     const normalizedLine = line.trim().replace(/\s{2,}/g, "\t");
     const fields = normalizedLine.split("\t");
 
-    // Split the second field (NAME) by spaces
+    // Split the second field (NAME) by spaces to only take the last name
     const NAME = fields[1].split(" ");
     // console.debug("NAME result:", NAME);
+    //
+    const postCode = addLeadingZero(fields[3]);
 
     // Construct the output string
-    return `LABO_${fields[0]}-${NAME[0]}-${fields[3]} ${fields[2]}`;
+    // fields[0] = Case number
+    // NAME[0] = Name of the Case
+    // fields[3] = Post code
+    // fields[2] = City
+    return `LABO_${fields[0]}-${NAME[0]}-${postCode} ${fields[2]}`;
   } catch {
     if (line === "") {
       return "";
